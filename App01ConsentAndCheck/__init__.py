@@ -139,7 +139,7 @@ class ConsentFormB_byPass(Page):
         player.consent = 1
         player.participant.consent = 1
         player.optInConsent = 1
-        player.participant.consent = 1
+        player.participant.optInConsent = 1
 
 
 class AudioVideoCheck_byPass(Page):

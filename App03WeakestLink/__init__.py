@@ -29,6 +29,11 @@ class VVC(Page):
     form_model = 'player'
     timeout_seconds = 600
 
+    @staticmethod
+    def vars_for_template(player: Player):
+        optInConsent = player.participant.optInConsent
+        return dict(optInConsent=optInConsent)
+
     # TODO: Please use this page to implement the treatments
 
 
