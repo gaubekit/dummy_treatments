@@ -1,0 +1,37 @@
+from otree.api import *
+import random
+
+c = cu
+
+doc = ''
+
+
+class C(BaseConstants):
+    NAME_IN_URL = 'App03WeakestLink'
+    PLAYERS_PER_GROUP = 4
+    NUM_ROUNDS = 1
+    ENDOWMENT = 200
+
+
+class Subsession(BaseSubsession):
+    pass
+
+
+class Group(BaseGroup):
+    pass
+
+
+class Player(BasePlayer):
+    pass
+
+
+class VVC(Page):
+    form_model = 'player'
+    timeout_seconds = 600
+
+    # TODO: Please use this page to implement the treatments
+
+
+page_sequence = [
+    VVC,
+]
