@@ -1,0 +1,19 @@
+# virtuel env
+venv/
+.Venv/
+env/
+.Env/
+ENV/
+.venv/
+.ENV/
+
+# Python-Cache-Data
+__pycache__/
+*.pyc
+*.pyo
+
+# db
+db.sqlite3
+
+# pycharme
+.idea
