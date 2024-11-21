@@ -36,7 +36,24 @@ class VVC(Page):
 
     # TODO: Please use this page to implement the treatments
 
+class BlueprintPage(Page):
+    template_name = 'treatment_page/treatment_blueprint.html'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return {
+            'variable_template': 'v1.0',
+        }
+
+class TreatmentInteraction(Page):
+    def vars_for_template(self):
+        spider_values = [4, 3, 5, 2, 4] 
+        return {
+            "spider_values": spider_values,
+        }
+
 
 page_sequence = [
-    VVC,
+    BlueprintPage,
+    VVC
 ]

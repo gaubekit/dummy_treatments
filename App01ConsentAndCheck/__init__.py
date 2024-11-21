@@ -163,7 +163,6 @@ class WaitForAll(WaitPage):
     """
     after_all_players_arrive = assign_perfect_stranger_id
 
-
 page_sequence = [
     EnterKD2LabId_byPass,
     ConsentFormB_byPass,
