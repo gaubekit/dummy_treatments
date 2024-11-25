@@ -105,7 +105,7 @@ class BlueprintNote1(Page):
     @staticmethod
     def vars_for_template(self):
         return {'title': 'Take notes:',
-                'description': 'What would be the best outcome for you personally for the holiday setting? Please press save, otherwise your answer will get lost.',}
+                'description': 'To find a common destination for a group holiday is often challenging. What do you think would be some helpful rules to find a common destination without any major conflict? Please press save, otherwise your answer will get lost.',}
 
 
     @staticmethod
@@ -124,7 +124,7 @@ class BlueprintImagination1(Page):
     def vars_for_template(player: Player):
         return{
             'title': 'Step 2',
-            'description': 'Please take the next 45 seconds to close your eyes and imagine that outcome as vividly as possible in your thoughts. Feel free to close your eyes - a sound will bring you back!'
+            'description': 'Please take the next 45 seconds to close your eyes and imagine the holiday when everyone followed those rules. Feel free to close your eyes - a sound will bring you back!'
 
         }
 #Page to explain them the next step that players can use the next 90 seconds as efficient as possible
