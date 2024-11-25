@@ -167,7 +167,7 @@ class BlueprintExplanation3(Page):
     def vars_for_template(player: Player):
         return{
             'title': 'Your next task will be:',
-            'description' : 'In the next step you will have 30 Seconds time to think about individually, what is hindering you as a team from having this enjoyable holiday. Please take notes in this next step! '
+            'description' : 'In the next step you will have 30 Seconds time to think about individually, what can be helpful rules to find a common destination. Please take notes in this next step! '
         }
 
 
@@ -181,7 +181,7 @@ class BlueprintNote2(Page):
     def vars_for_template(self):
         return{
             'title': 'Take notes',
-            'description': 'What is hindering you as a team from having an enjoyable vacation? Please press submit, otherwise your information will get lost.',
+            'description': 'What could be helpful rules to find a common destination? Please press submit, otherwise your information will get lost.',
 
         }
 
@@ -199,7 +199,7 @@ class BlueprintImagination2(Page):
     def vars_for_template(player: Player):
         return {
             'title': 'Take a moment to imagine:',
-            'description' : 'What is the obstacle, that is personally the hardest for you to overcome. You may close your eyes - a sound will bring you back in 45 seconds'
+            'description' : 'What can be the outcome of the holiday when everyone followed those rules. You may close your eyes - a sound will bring you back in 45 seconds'
         }
 
 class BlueprintExplanation4(Page):
@@ -210,7 +210,7 @@ class BlueprintExplanation4(Page):
     def vars_for_template(player: Player):
         return{
             'title': 'Your next task will be:',
-            'description': 'Use the next 90 seconds to share your thoughts with the team and discover what you have in common. Your notes about the obstacle will again be shared.'
+            'description': 'Use the next 90 seconds to share your thoughts with the team and discover what you have in common. Your notes about the rules will again be shared.'
         }
 
 class Videomeeting2(Page):
