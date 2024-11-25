@@ -101,8 +101,8 @@
 
     <div class="top-section">
         <div class="section" style="flex: 1;">
-            <h2>Introduction</h2>
-            <p>This is the text/introduction for the treatment page. </p>
+            <h2> {{ title section }} </h2>
+            <p> {{ description_section }}</p>
         </div>
 
         <div class="section" style="flex: 1;">
@@ -116,7 +116,7 @@
             <h2>Treatment Interaction: Spider Graph</h2>
             <canvas id="spiderChart"></canvas>
         </div>
-
+{
         <div class="form-section">
             <input type="number" id="honesty" placeholder="Honesty" min="0" max="5" value="4" oninput="updateChart()">
             <input type="number" id="kindness" placeholder="Kindness" min="0" max="5" value="3" oninput="updateChart()">
