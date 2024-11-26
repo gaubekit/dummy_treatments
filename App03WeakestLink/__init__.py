@@ -123,7 +123,7 @@ class BlueprintImagination1(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return{
-            'title': 'Step 2',
+            'title': 'Imagination',
             'description': 'Please take the next 45 seconds to close your eyes and imagine that outcome as vividly as possible in your thoughts. Feel free to close your eyes - a sound will bring you back!'
 
         }
@@ -198,7 +198,7 @@ class BlueprintImagination2(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return {
-            'title': 'Take a moment to imagine:',
+            'title': 'Imagination',
             'description' : 'What is the obstacle, that is personally the hardest for you to overcome. You may close your eyes - a sound will bring you back in 45 seconds'
         }
 
@@ -240,19 +240,22 @@ class ThankYou(Page):
             'title' : 'Thank You!',
             'description' : 'Your participation is highly appreciated!'
         }
-page_sequence = [
-    VVC,
-    PlayerName,#20 seconds
-    BlueprintExplanation1,#15 seconds
-    BlueprintNote1,#30 seconds
-    BlueprintImagination1,#45 seconds
-    BlueprintExplanation2,#15 seconds
-    Videomeeting1,#90 seconds
-    BlueprintExplanation3,#15 seconds
-    BlueprintNote2,#30 seconds
-    BlueprintImagination2,#45 seconds
-    BlueprintExplanation4,#15 seconds
-    Videomeeting2,#90 seconds => 410 seconds => 70 seconds free
-    ThankYou
 
+class MentalContrasting(Page):
+    template_name = 'treatment_page/Template_Video_Meeting.html'
+    timeout_seconds = 180  # Gesamtzeit: z. B. 3 Minuten
+    group_by_arrival_time = True  # Spieler in Gruppen von 4
+
+    def vars_for_template(self):
+            return {
+                'group_id': self.group.id_in_subsession,
+            }
+
+    def before_next_page(self):
+            # Hier können gespeicherte Notizen pro Spieler gesichert werden
+            self.player.notes = self.session.vars.get('notes', '')
+
+
+page_sequence = [
+    MentalContrasting
 ]
