@@ -1,0 +1,136 @@
+{% extends "global/Page.html" %}
+{% block content %}
+<style>
+/* General container styling */
+.container-fluid {
+    height: 95vh; /* Full height reduced by 5% */
+    display: flex;
+    flex-direction: row;
+}
+
+/* Styling for the video container to match right-side height */
+.video-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%; /* Increased width by 20% */
+    height: 100%; /* Exact height match with right side */
+    border: 1px solid black; /* Add a border around the video container */
+}
+
+/* Styling for the right-side content (instructions, notes, etc.) */
+.right-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 40%; /* Increased width by 20% */
+    height: 100%; /* Exact height match with the video container */
+}
+
+/* Content container for dynamic elements */
+.content-container {
+    border: 2px solid red; /* Add a red border for clarity */
+    flex: 1; /* Take up half of the right container */
+    margin-bottom: 10px; /* Add spacing between the two sections */
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    text-align: center;
+}
+
+/* Notes container styling */
+.notes-container {
+    border: 1px solid black; /* Add a border around the notes container */
+    flex: 1; /* Take up the remaining space in the right container */
+}
+
+/* Prevent users from resizing the textarea */
+textarea {
+    resize: none;
+    width: 100%; /* Make textarea full width */
+    height: 100%; /* Make textarea fill the notes container */
+}
+
+/* Ensure the iframe (Jitsi meeting) fills its container */
+iframe {
+    width: 100%; /* Make the iframe stretch horizontally */
+    height: 100%; /* Make the iframe stretch vertically */
+    border: none; /* Remove the default border of the iframe */
+}
+</style>
+
+<div class="container-fluid">
+    <!-- Video meeting (left side, matches height of right side) -->
+    <div class="video-container">
+        <iframe id="jitsi-frame" src="https://meet.jit.si/example" allow="camera; microphone"></iframe>
+    </div>
+
+    <!-- Right side: dynamic content and notes (stacked) -->
+    <div class="right-container">
+        <!-- Dynamic content container -->
+        <div class="content-container">
+            <div id="content">
+                <h4>Wechselnde Inhalte</h4> <!-- Placeholder heading -->
+            </div>
+        </div>
+
+        <!-- Notes container -->
+        <div class="notes-container">
+            <textarea
+                id="notes"
+                class="form-control"
+                placeholder="Hier Notizen eingeben..."
+            ></textarea>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // References to important elements
+    const contentDiv = document.getElementById("content"); // Div that displays dynamic content
+    const notesTextarea = document.getElementById("notes"); // Textarea for user notes
+    const jitsiFrame = document.getElementById("jitsi-frame"); // Jitsi meeting iframe
+
+    // List of phases with their content and durations
+    const contentList = [
+        { content: '<p> {{ Spider graph}}</p>', duration: 60000 }, // Show the spider graph for 60 seconds
+        { content: '<p>Geben Sie Ihre Notizen ein...</p>', duration: 30000 }, // Allow note input for 30 seconds
+        { content: '<p>Meeting pausiert. Warten Sie...</p>', duration: 60000 }, // Pause the meeting for 60 seconds
+    ];
+
+    let notesData = ''; // Variable to store the notes entered by the user
+    let index = 0; // Index to track the current phase
+
+    // Function to change content dynamically based on the current phase
+    function changeContent() {
+        const current = contentList[index]; // Get the current phase object
+
+        if (index === 1) {
+            // Phase 2: Allow the user to input notes
+            notesTextarea.disabled = false; // Enable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+        } else {
+            notesTextarea.disabled = true; // Disable the textarea for all other phases
+            if (index === 2) notesData = notesTextarea.value; // Save the notes during Phase 2
+        }
+
+        if (index === 2) {
+            jitsiFrame.src = ''; // Phase 3: Disable the Jitsi meeting by clearing the iframe source
+        } else if (index === 3) {
+            jitsiFrame.src = "https://meet.jit.si/example"; // Phase 4: Re-enable the Jitsi meeting
+            current.content = `<p>Ihre gespeicherten Notizen: ${notesData}</p>`; // Display the saved notes
+        }
+
+        contentDiv.innerHTML = current.content; // Update the content displayed in the content container
+        index = (index + 1) % contentList.length; // Move to the next phase, loop back to the start if necessary
+
+        // Set a timer to automatically change to the next phase
+        setTimeout(changeContent, current.duration);
+    }
+
+    // Start the content-changing sequence
+    changeContent();
+});
+</script>
+{% endblock %}
