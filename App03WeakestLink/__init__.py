@@ -28,7 +28,7 @@ class Player(BasePlayer):
      notes_outcome = models.StringField(blank = True)
      notes_name = models.StringField(blank = True)
      notes_obstacle = models.StringField(blank = True)
-     timeout_seconds = 330
+     timeout_seconds = models.IntegerField(initial=330)
      pass
 
 
