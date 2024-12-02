@@ -1,12 +1,14 @@
 {% extends "global/Page.html" %}
 {% block content %}
+{% load static %}
 <style>
 /* General container styling */
 .container-fluid {
-    height: 95vh; /* Full height reduced by 5% */
+    height: 90vh; /* Full height reduced by 10% */
     display: flex;
     flex-direction: row;
 }
+
 
 /* Styling for the video container to match right-side height */
 .video-container {
@@ -16,6 +18,20 @@
     width: 60%; /* Increased width by 20% */
     height: 100%; /* Exact height match with right side */
     border: 1px solid black; /* Add a border around the video container */
+}
+
+.placeholder-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1); /* Leichter grauer Hintergrund */
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 /* Styling for the right-side content (instructions, notes, etc.) */
@@ -59,14 +75,23 @@ iframe {
 }
 </style>
 
+
+
 <div class="container-fluid">
-    <!-- Video meeting (left side, matches height of right side) -->
+
+    <!--Video meeting (left side, matches height of right side) -->
     <div class="video-container">
+        <div id="video-placeholder" class="placeholder-text">
+            <h2>Das Meeting ist derzeit deaktiviert.</h2>
+            <p>Bitte warten Sie, bis das Meeting aktiviert wird.</p>
+        </div>
         <iframe id="jitsi-frame" src="https://meet.jit.si/example" allow="camera; microphone"></iframe>
     </div>
 
+
     <!-- Right side: dynamic content and notes (stacked) -->
     <div class="right-container">
+
         <!-- Dynamic content container -->
         <div class="content-container">
             <div id="content">
@@ -85,52 +110,107 @@ iframe {
     </div>
 </div>
 
+
+<audio id = "Audio">
+  <source src="{{ static 'MC-treatment.mp3' }}" type="audio/mpeg">
+</audio>
+
+
+
+<div id="timeout" data-remaining="{{ timeout_seconds }}"></div>
+
+
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
+
     // References to important elements
     const contentDiv = document.getElementById("content"); // Div that displays dynamic content
     const notesTextarea = document.getElementById("notes"); // Textarea for user notes
     const jitsiFrame = document.getElementById("jitsi-frame"); // Jitsi meeting iframe
+    const videoPlaceholder = document.getElementById("video-placeholder"); // Placeholder text
 
-    // List of phases with their content and durations
-    const contentList = [
-        { content: '<p> {{ Spider graph}}</p>', duration: 60000 }, // Show the spider graph for 60 seconds
-        { content: '<p>Geben Sie Ihre Notizen ein...</p>', duration: 30000 }, // Allow note input for 30 seconds
-        { content: '<p>Meeting pausiert. Warten Sie...</p>', duration: 60000 }, // Pause the meeting for 60 seconds
-    ];
+ var audio = document.getElementById('Audio');
+    audio.play();
+
+    // setup at beginning
+    notesTextarea.disabled = true;
+    jitsiFrame.style.display = "none"; // Hide Jitsi iframe initially
+    videoPlaceholder.style.display = "flex"; // Show placeholder text
+    jitsiFrame.src = ''; // Disable the Jitsi meeting by clearing the iframe source
+    contentDiv.textContent = "Announcement in progress";
+
+
+
+   let timeout = parseInt(document.getElementById("timeout").getAttribute('data-remaining'));
+
+    let remainingTime = timeout;
+
+    console.log("test");
+
 
     let notesData = ''; // Variable to store the notes entered by the user
-    let index = 0; // Index to track the current phase
 
-    // Function to change content dynamically based on the current phase
-    function changeContent() {
-        const current = contentList[index]; // Get the current phase object
+  // Countdown
+    const interval = setInterval(() => {
+        remainingTime--;
+       // contentDiv.textContent = remainingTime;
 
-        if (index === 1) {
-            // Phase 2: Allow the user to input notes
+
+        if (remainingTime === 320) {
             notesTextarea.disabled = false; // Enable the textarea for input
             notesTextarea.value = ''; // Clear any previous text
-        } else {
-            notesTextarea.disabled = true; // Disable the textarea for all other phases
-            if (index === 2) notesData = notesTextarea.value; // Save the notes during Phase 2
+            contentDiv.textContent = "Take some notes on what would be your prefered outcome when going on an enjoyable holiday with a team, microphone and camera will not be available";
+
+        }
+        if (remainingTime === 310) {
+            notesTextarea.disabled = true;
+            notesData = notesTextarea.value;
+            jitsiFrame.src = "https://meet.jit.si/example";
+             jitsiFrame.style.display = "block"; // Show Jitsi iframe
+            videoPlaceholder.style.display = "none"; // Hide placeholder text
+            contentDiv.textContent = "video-meeting in progress, share your thoughts";
+
+        }
+        if (remainingTime === 300) {
+            notesTextarea.disabled = true; // Disable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
         }
 
-        if (index === 2) {
-            jitsiFrame.src = ''; // Phase 3: Disable the Jitsi meeting by clearing the iframe source
-        } else if (index === 3) {
-            jitsiFrame.src = "https://meet.jit.si/example"; // Phase 4: Re-enable the Jitsi meeting
-            current.content = `<p>Ihre gespeicherten Notizen: ${notesData}</p>`; // Display the saved notes
+        if (remainingTime === 290) {
+            notesTextarea.disabled = false; // Enable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            contentDiv.textContent = "Take some notes on what is hindering you as a team from having this enjoyable holiday, microphone and camera will not be available";
+
         }
 
-        contentDiv.innerHTML = current.content; // Update the content displayed in the content container
-        index = (index + 1) % contentList.length; // Move to the next phase, loop back to the start if necessary
+     if (remainingTime === 280) {
+            notesTextarea.disabled = true;
+            notesData = notesTextarea.value;
+            jitsiFrame.src = "https://meet.jit.si/example";
+             jitsiFrame.style.display = "block"; // Show Jitsi iframe
+            videoPlaceholder.style.display = "none"; // Hide placeholder text
+            contentDiv.textContent = "video-meeting in progress, share your thoughts";
 
-        // Set a timer to automatically change to the next phase
-        setTimeout(changeContent, current.duration);
-    }
+        }
 
-    // Start the content-changing sequence
-    changeContent();
+
+
+        // stops Countdown when time is up
+        if (remainingTime <= 0) {
+            clearInterval(interval);
+
+
+        }
+    }, 1000); // reduces time every second
+
+
 });
+
+
 </script>
-{% endblock %}
+{{ endblock }}

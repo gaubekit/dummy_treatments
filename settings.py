@@ -6,6 +6,10 @@ SESSION_CONFIGS = [dict(name='weakestlinkdemo', num_demo_participants=4,
                                       'App03WeakestLink',
                                       ])]
 
+
+
+
+
 DEBUG = False
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = ''
