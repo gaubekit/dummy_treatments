@@ -110,9 +110,17 @@ iframe {
     </div>
 </div>
 
+<!-- Progressbar-Container -->
+<div style="width: 100%; background-color: #f3f3f3; border: 1px solid #ccc; border-radius: 5px; margin: 20px 0;">
+    <!-- Fortschrittsbalken -->
+    <div id="progress-bar" style="width: 0%; background-color: #4caf50; height: 25px; text-align: center; color: white; line-height: 25px; border-radius: 5px;">
+        0%
+    </div>
+</div>
+
 
 <audio id = "Audio">
-  <source src="{{ static 'MC-treatment.mp3' }}" type="audio/mpeg">
+  <source src="{{ static 'MCCR.mp3' }}" type="audio/mpeg">
 </audio>
 
 
@@ -123,6 +131,38 @@ iframe {
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
+
+
+   // Dauer in Millisekunden
+    const duration = 480000; // 8 Minuten
+    const progressBar = document.getElementById("progress-bar");
+
+    let startTime = null;
+
+    function updateProgress(timestamp) {
+        if (!startTime) startTime = timestamp;
+
+        // Berechne verstrichene Zeit
+        const elapsed = timestamp - startTime;
+
+        // Berechne den Fortschritt in Prozent
+        const progress = Math.min((elapsed / duration) * 100, 100);
+
+        // Setze die Breite der Progressbar und den Text
+        progressBar.style.width = progress + "%";
+        progressBar.innerHTML = Math.round(progress) + "%";
+
+        // Wenn die Zeit noch nicht abgelaufen ist, führe die Funktion erneut aus
+        if (elapsed < duration) {
+            requestAnimationFrame(updateProgress);
+        } else {
+            // Optional: Aktion, wenn die Progressbar fertig ist
+            progressBar.innerHTML = "Fertig!";
+        }
+    }
+
+    // Starte die Progressbar
+    requestAnimationFrame(updateProgress);
 
     // References to important elements
     const contentDiv = document.getElementById("content"); // Div that displays dynamic content
@@ -156,39 +196,44 @@ document.addEventListener("DOMContentLoaded", function () {
         remainingTime--;
        // contentDiv.textContent = remainingTime;
 
-
-        if (remainingTime === 320) {
+         // Notes
+        if (remainingTime === 468) {
             notesTextarea.disabled = false; // Enable the textarea for input
             notesTextarea.value = ''; // Clear any previous text
             contentDiv.textContent = "Take some notes on what would be your prefered outcome when going on an enjoyable holiday with a team, microphone and camera will not be available";
 
         }
-        if (remainingTime === 310) {
-            notesTextarea.disabled = true;
-            notesData = notesTextarea.value;
-            jitsiFrame.src = "https://meet.jit.si/example";
-             jitsiFrame.style.display = "block"; // Show Jitsi iframe
-            videoPlaceholder.style.display = "none"; // Hide placeholder text
-            contentDiv.textContent = "video-meeting in progress, share your thoughts";
 
-        }
-        if (remainingTime === 300) {
-            notesTextarea.disabled = true; // Disable the textarea for input
+       // Announcement
+        if (remainingTime === 450) {
+           notesTextarea.disabled = true; // Disable the textarea for input
             notesTextarea.value = ''; // Clear any previous text
             jitsiFrame.src = '';
              jitsiFrame.style.display = "none"; // Hide Jitsi iframe
             videoPlaceholder.style.display = "flex"; // Show placeholder text
              contentDiv.textContent = "Announcement in progress";
+
         }
 
-        if (remainingTime === 290) {
-            notesTextarea.disabled = false; // Enable the textarea for input
+         // Ruhephase
+        if (remainingTime === 438) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+             contentDiv.textContent = "Please close your eyes";
+
+        }
+
+         // Announcement
+        if (remainingTime === 419) {
+           notesTextarea.disabled = true; // Disable the textarea for input
             notesTextarea.value = ''; // Clear any previous text
-            contentDiv.textContent = "Take some notes on what is hindering you as a team from having this enjoyable holiday, microphone and camera will not be available";
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
 
-        }
-
-     if (remainingTime === 280) {
+         // Video Meeting
+        if (remainingTime === 410) {
             notesTextarea.disabled = true;
             notesData = notesTextarea.value;
             jitsiFrame.src = "https://meet.jit.si/example";
@@ -198,6 +243,97 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+        // Announcement
+        if (remainingTime === 323) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+              // Notes
+        if (remainingTime === 316) {
+            notesTextarea.disabled = false; // Enable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            contentDiv.textContent = "";
+
+        }
+
+        // Announcement
+        if (remainingTime === 296) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+        // Ruhephase
+        if (remainingTime === 283) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+             contentDiv.textContent = "Please close your eyes";
+
+        }
+
+         // Announcement
+        if (remainingTime === 250) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+
+            // Video Meeting
+        if (remainingTime === 238) {
+            notesTextarea.disabled = true;
+            notesData = notesTextarea.value;
+            jitsiFrame.src = "https://meet.jit.si/example";
+             jitsiFrame.style.display = "block"; // Show Jitsi iframe
+            videoPlaceholder.style.display = "none"; // Hide placeholder text
+            contentDiv.textContent = "video-meeting in progress, share your thoughts";
+
+        }
+
+         // Announcement
+        if (remainingTime === 165) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+
+              // Notes
+        if (remainingTime === 150) {
+            notesTextarea.disabled = false; // Enable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            contentDiv.textContent = "";
+
+        }
+  // Announcement
+        if (remainingTime === 126) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+         // Video Meeting
+        if (remainingTime === 116) {
+            notesTextarea.disabled = true;
+            notesData = notesTextarea.value;
+            jitsiFrame.src = "https://meet.jit.si/example";
+             jitsiFrame.style.display = "block"; // Show Jitsi iframe
+            videoPlaceholder.style.display = "none"; // Hide placeholder text
+            contentDiv.textContent = "video-meeting in progress, share your thoughts";
+
+        }
 
 
         // stops Countdown when time is up

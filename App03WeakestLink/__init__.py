@@ -28,7 +28,7 @@ class Player(BasePlayer):
      notes_outcome = models.StringField(blank = True)
      notes_name = models.StringField(blank = True)
      notes_obstacle = models.StringField(blank = True)
-     timeout_seconds = models.IntegerField(initial=330)
+     timeout_seconds = models.IntegerField(initial=480)
      pass
 
 
@@ -36,7 +36,7 @@ class Player(BasePlayer):
 
 class MentalContrasting(Page):
     template_name = 'treatment_page/Template_Video_Meeting.html'
-    timeout_seconds = 330  # Gesamtzeit: 5:30 Minuten
+    timeout_seconds = 480  # Gesamtzeit: 8:00 Minuten
     group_by_arrival_time = True  # Spieler in Gruppen von 4
 
     def vars_for_template(self):
