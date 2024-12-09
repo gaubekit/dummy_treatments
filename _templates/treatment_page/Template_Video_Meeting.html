@@ -10,28 +10,27 @@
 
 /* General container styling */
 .container-fluid {
-    height: 85vh;
-    width: 170%;
+    height: 90vh; /* Full height reduced by 10% */
+    width: 180%;
     display: flex;
     flex-direction: row;
-    background-color: #f8f8f9;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    gap: 16px;
-    margin-left: -35%;
+    gap: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background-color: #ffffff;
+    margin-left: -40%;
 }
 
-/* Styling for the video container */
+/* Styling for the video container to match right-side height */
 .video-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60%;
-    height: 100%;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 60%; /* Increased width by 20% */
+    height: 100%; /* Exact height match with right side */
+    background-color: #ffffff; 
+    border: 1px solid #d1d1d6;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .placeholder-text {
@@ -42,67 +41,73 @@
     text-align: center;
     width: 100%;
     height: 100%;
-    color: #555555;
-    font-size: 1.2rem;
-    font-weight: 500;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1d1d1f;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 20px;
 }
 
-/* Styling for the right-side content */
+/* Styling for the right-side content (instructions, notes, etc.) */
 .right-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 40%;
-    height: 100%;
-    gap: 16px;
+    width: 40%; /* Increased width by 20% */
+    height: 100%; /* Exact height match with the video container */
+    padding: 0px; /* Abstand für Innenraum */
+    background: none; /* Entfernt Hintergrundfarbe */
+    box-shadow: none; /* Entfernt Schatten */
+}
 
 /* Content container for dynamic elements */
 .content-container {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1d1d6;
+    border-radius: 10px;
     flex: 1;
+    margin-bottom: 10px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
     text-align: center;
-    padding: 10px;
+    background-color: #ffffff; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
 /* Notes container styling */
 .notes-container {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex: 1;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    border: 1px solid #d1d1d6; /* Dezente graue Umrandung */
+    border-radius: 10px; /* Runde Ecken */
+    flex: 1; /* Take up the remaining space in the right container */
+    background-color: #ffffff; /* Weißer Hintergrund */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtiler Schatten */
+    padding: 20px; /* Innenabstand für Lesbarkeit */
 }
 
-/* Textarea Styling */
+/* Prevent users from resizing the textarea */
 textarea {
     resize: none;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #d1d1d6;
-    border-radius: 8px;
-    padding: 10px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    width: 100%; /* Make textarea full width */
+    height: 100%; /* Make textarea fill the notes container */
+    border: 1px solid #d1d1d6; /* Dezente graue Umrandung */
+    border-radius: 5px; /* Runde Ecken */
+    padding: 20px; /* Innenabstand */
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-size: 1rem;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    outline: none;
+    background-color: #ffffff; /* Weißer Hintergrund */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Innerer Schatten für Tiefe */
 }
 
-/* Styling for the iframe (Jitsi meeting) */
+/* Ensure the iframe (Jitsi meeting) fills its container */
 iframe {
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: none;
+    width: 100%; /* Make the iframe stretch horizontally */
+    height: 100%; /* Make the iframe stretch vertically */
+    border: none; /* Remove the default border of the iframe */
+    border-radius: 10px; /* Runde Ecken */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtiler Schatten */
 }
+
 
 </style>
 
@@ -378,4 +383,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 </script>
+
+
 {{ endblock }}
