@@ -1,16 +1,19 @@
 from otree.api import *
 import random
 
+from otree.models import group
+
 c = cu
 
 doc = ''
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'App03WeakestLink'
+    NAME_IN_URL = 'XXTestnameXX' # Platzhalter
     PLAYERS_PER_GROUP = 4
     NUM_ROUNDS = 1
     ENDOWMENT = 200
+
 
 
 class Subsession(BaseSubsession):
@@ -22,38 +25,29 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    pass
+     notes_outcome = models.StringField(blank = True)
+     notes_name = models.StringField(blank = True)
+     notes_obstacle = models.StringField(blank = True)
+     timeout_seconds = models.IntegerField(initial=480)
+     pass
 
 
-class VVC(Page):
-    form_model = 'player'
-    timeout_seconds = 600
 
-    @staticmethod
-    def vars_for_template(player: Player):
-        optInConsent = player.participant.optInConsent
-        return dict(optInConsent=optInConsent)
 
-    # TODO: Please use this page to implement the treatments
+class MentalContrasting(Page):
+    template_name = 'treatment_page/Template_Video_Meeting.html'
+    timeout_seconds = 480  # Gesamtzeit: 8:00 Minuten
+    group_by_arrival_time = True  # Spieler in Gruppen von 4
 
-class BlueprintPage(Page):
-    template_name = 'treatment_page/treatment_blueprint.html'
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        return {
-            'variable_template': 'v1.0',
-        }
-
-class TreatmentInteraction(Page):
     def vars_for_template(self):
-        spider_values = [4, 3, 5, 2, 4] 
-        return {
-            "spider_values": spider_values,
-        }
+            return {
+                'group_id': self.group.id_in_subsession,
+                'timeout_seconds': self.timeout_seconds,
+
+            }
+
 
 
 page_sequence = [
-    BlueprintPage,
-    VVC
+    MentalContrasting
 ]
