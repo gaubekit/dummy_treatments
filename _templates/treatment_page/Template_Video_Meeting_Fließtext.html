@@ -234,7 +234,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (remainingTime === 468) {
             notesTextarea.disabled = false; // Enable the textarea for input
             notesTextarea.value = ''; // Clear any previous text
-            contentDiv.textContent = "Take some notes on what would be your prefered outcome when going on an enjoyable holiday with a team, microphone and camera will not be available";
+            contentDiv.textContent = "You are going to holiday with your team. When the team works well together this leads to an enjoyable experience for everyone.\n"+
+                "What would be the best outcome for you personally? Please think about it individually and write a short note. Therefore the video meeting is not available.";
 
         }
 
@@ -252,7 +253,8 @@ document.addEventListener("DOMContentLoaded", function () {
          // Ruhephase
         if (remainingTime === 438) {
            notesTextarea.disabled = true; // Disable the textarea for input
-             contentDiv.textContent = "Please close your eyes";
+             contentDiv.textContent = "Please take a moment to imagine this output as clearly and vividly as possible in your mind.\n"+
+            " Feel free to close your eyes and we will tell you when it is time to continue with the next step.";
 
         }
 
@@ -273,7 +275,8 @@ document.addEventListener("DOMContentLoaded", function () {
             jitsiFrame.src = "https://meet.jit.si/example";
              jitsiFrame.style.display = "block"; // Show Jitsi iframe
             videoPlaceholder.style.display = "none"; // Hide placeholder text
-            contentDiv.textContent = "video-meeting in progress, share your thoughts";
+            contentDiv.textContent = "Now that you have a clear understanding of your own needs, it is time to learn about your team.\n"+
+                "Take your time to share what you imagined.";
 
         }
 
@@ -287,11 +290,12 @@ document.addEventListener("DOMContentLoaded", function () {
              contentDiv.textContent = "Announcement in progress";
              }
 
-              // Notes
+              // Notes Obstacle
         if (remainingTime === 316) {
             notesTextarea.disabled = false; // Enable the textarea for input
             notesTextarea.value = ''; // Clear any previous text
-            contentDiv.textContent = "";
+            contentDiv.textContent = "What obstacles might the team face based on what you've learned about your member's needs?\n"+
+                " Think about it individually and write down a short note.";
 
         }
 
@@ -304,10 +308,11 @@ document.addEventListener("DOMContentLoaded", function () {
              contentDiv.textContent = "Announcement in progress";
              }
 
-        // Ruhephase
+        // Imagine Obstacle
         if (remainingTime === 283) {
            notesTextarea.disabled = true; // Disable the textarea for input
-             contentDiv.textContent = "Please close your eyes";
+             contentDiv.textContent = "Based on the obstacles you identified, choose the one that you find the most difficult to overcome and imagine as vividly as possible.\n"+
+                 "Feel free to close your eyes - we will tell you when it's time to continue with the next step.";
 
         }
 
@@ -321,14 +326,16 @@ document.addEventListener("DOMContentLoaded", function () {
              }
 
 
-            // Video Meeting
+            // Video Meeting Obstacle
         if (remainingTime === 238) {
             notesTextarea.disabled = true;
             notesData = notesTextarea.value;
             jitsiFrame.src = "https://meet.jit.si/example";
              jitsiFrame.style.display = "block"; // Show Jitsi iframe
             videoPlaceholder.style.display = "none"; // Hide placeholder text
-            contentDiv.textContent = "video-meeting in progress, share your thoughts";
+            contentDiv.textContent ="Now that you have a better understanding of the obstacles that may be challenging\n" +
+                " for you, it's time to explore the obstacles other team members may face. Take some\n" +
+                " time to share what you imagined with your team." ;
 
         }
 
@@ -342,11 +349,14 @@ document.addEventListener("DOMContentLoaded", function () {
              }
 
 
-              // Notes
+              // Notes Rules
         if (remainingTime === 150) {
             notesTextarea.disabled = false; // Enable the textarea for input
             notesTextarea.value = ''; // Clear any previous text
-            contentDiv.textContent = "";
+            contentDiv.textContent = "In the first phase, you identified the team's needs. Next, you examined the obstacles\n" +
+                " that could prevent those needs from being met. Now, it's time to focus on collaboration."+
+                "Take some time to reflect individually and consider collaboration rules that could help\n" +
+                " your team overcome these challenges.";
 
         }
   // Announcement
@@ -358,14 +368,15 @@ document.addEventListener("DOMContentLoaded", function () {
              contentDiv.textContent = "Announcement in progress";
              }
 
-         // Video Meeting
+         // Video Meeting Rules
         if (remainingTime === 116) {
             notesTextarea.disabled = true;
             notesData = notesTextarea.value;
             jitsiFrame.src = "https://meet.jit.si/example";
              jitsiFrame.style.display = "block"; // Show Jitsi iframe
             videoPlaceholder.style.display = "none"; // Hide placeholder text
-            contentDiv.textContent = "video-meeting in progress, share your thoughts";
+            contentDiv.textContent = "Nowthatyou've identified some rules, share and discuss them with your team, and\n" +
+                " agree on which ones you'd like to follow together.";
 
         }
 
