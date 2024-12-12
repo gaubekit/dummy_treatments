@@ -5,6 +5,12 @@ SESSION_CONFIGS = [dict(name='weakestlinkdemo', num_demo_participants=4,
                         app_sequence=['App01ConsentAndCheck',
                                       'App03WeakestLink',
                                       ])]
+
+
+
+
+
+DEBUG = False
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = ''
 USE_POINTS = False

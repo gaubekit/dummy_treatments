@@ -1,0 +1,45 @@
+const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
+    // adjust information to display
+
+    const options = {
+        roomName: "Video Meeting", //This is the name of the room, with player's group ID
+        parentNode: document.getElementById('video-placeholder'), //Now, you declare here which element should parent your stream.
+        configOverwrite: {
+            prejoinConfig: {
+                enabled: false
+            },
+            disableSelfView: false,
+            startWithAudioMuted: false,
+            startWithVideoMuted: false,
+            filmstrip: {
+                disableResizable: true,
+            },
+            participantsPane: {
+                hideModeratorSettingsTab: true,
+                hideMoreActionsButton: true,
+                hideMuteAllButton: true
+            },
+
+                disableSimulcast: false,
+                enableLayerSuspension: true
+
+        },
+        interfaceConfigOverwrite: {
+            TOOLBAR_BUTTONS: ['microphone', 'camera', 'fodeviceselection'],
+            SHOW_JITSI_WATERMARK: false,
+            TILE_VIEW_MAX_COLUMNS: 2,
+            TILE_VIEW_ENABLED: true,
+            SHOW_MEETING_TIMER: false,
+            SHOW_MORE_ACTIONS: false,
+            PARTICIPANT_MENU_BUTTONS: []
+        },
+        userInfo: {
+            displayName: TN_name,
+        }
+    };
+
+        const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
+        //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
+        api.addEventListener('videoConferenceJoined', () => {
+            api.executeCommand('setTileView', true);
+        });
