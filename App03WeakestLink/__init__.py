@@ -35,7 +35,7 @@ class Player(BasePlayer):
 
 
 class MentalContrasting(Page):
-    template_name = 'treatment_page/Template_Video_Meeting_Stichpunkte.html'
+    template_name = 'treatment_page/Template_Video_Meeting_AKTUELL.html'
     timeout_seconds = 480  # Gesamtzeit: 8:00 Minuten
     group_by_arrival_time = True  # Spieler in Gruppen von 4
 

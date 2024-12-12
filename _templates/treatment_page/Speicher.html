@@ -110,18 +110,16 @@
     }
 </style>
 
-<!-- Main content layout: includes video meeting with placeholder text and jitsi iFrame and right-side container --> 
+<!-- Main content layout: includes video meeting with placeholder text and jitsi iFrame and right-side container -->
 <div class="container-fluid">
     <!-- Video Meeting Section -->
     <div class="video-container">
         <div id="video-placeholder" class="placeholder-text">
-            <h2>Video-Meeting</h2>
-            <p></p>
+            <h2>Das Meeting ist derzeit deaktiviert.</h2>
+            <p>Bitte warten Sie, bis das Meeting aktiviert wird.</p>
         </div>
-                   <script src="https://haps-meeting.k8s.iism.kit.edu/external_api.js"></script>
+        <iframe id="jitsi-frame" src="" allow="camera; microphone"></iframe>
     </div>
-
-
 
     <!-- Right-side Content -->
     <div class="right-container">
@@ -151,16 +149,12 @@
 <!-- Timeout data: stores data of remaining time -->
 <div id="timeout" data-remaining="{{ timeout_seconds }}"></div>
 
-<!-- Script for managing a timed sequence with dynamic content updates, progress bar, audio playback, and interaction via a countdown timer. 
+<!-- Script for managing a timed sequence with dynamic content updates, progress bar, audio playback, and interaction via a countdown timer.
     It controls the display of announcements, enables/disables user input, and triggers video meetings at specific time intervals. -->
 <script>
-
-
-
     document.addEventListener("DOMContentLoaded", () => {
 
-
-    // Constant variables
+        // Constant variables
         const DURATION = 480000; // Duration of treatment (8 minutes)
         const INTERVAL_TIME = 1000; // Countdown interval (1 second)
 
@@ -168,6 +162,7 @@
         const progressBar = document.getElementById("progress-bar");
         const contentDiv = document.getElementById("content");
         const notesTextarea = document.getElementById("notes");
+        const jitsiFrame = document.getElementById("jitsi-frame");
         const videoPlaceholder = document.getElementById("video-placeholder");
         const timeoutElement = document.getElementById("timeout");
         const audio = document.getElementById("Audio");
@@ -194,67 +189,14 @@
             }
         };
 
-     const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
-      const TN_name = "P1";
-    // adjust information to display
-
-    const options = {
-        roomName: "Video Meeting", //This is the name of the room, with player's group ID
-        parentNode: document.getElementById('video-placeholder'), //Now, you declare here which element should parent your stream.
-        configOverwrite: {
-            prejoinConfig: {
-                enabled: false
-            },
-            disableSelfView: false,
-            startWithAudioMuted: true,
-            startWithVideoMuted: true,
-            filmstrip: {
-                disableResizable: true,
-            },
-            participantsPane: {
-                hideModeratorSettingsTab: true,
-                hideMoreActionsButton: true,
-                hideMuteAllButton: true
-            },
-
-                disableSimulcast: false,
-                enableLayerSuspension: true
-
-        },
-        interfaceConfigOverwrite: {
-            TOOLBAR_BUTTONS: ['microphone', 'camera', 'fodeviceselection'],
-            SHOW_JITSI_WATERMARK: false,
-            TILE_VIEW_MAX_COLUMNS: 2,
-            TILE_VIEW_ENABLED: true,
-            SHOW_MEETING_TIMER: false,
-            SHOW_MORE_ACTIONS: false,
-            PARTICIPANT_MENU_BUTTONS: []
-        },
-        userInfo: {
-            displayName: TN_name,
-        }
-    };
-
-        const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
-        //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
-        api.addEventListener('videoConferenceJoined', () => {
-            api.executeCommand('setTileView', true);
-            console.log("Meeting joined");
-
-        });
-
-
-
-
-
         // Play audio
         audio.play();
 
         // Initial setup
         notesTextarea.disabled = true;
-
+        jitsiFrame.style.display = "none";
         videoPlaceholder.style.display = "flex";
-
+        jitsiFrame.src = "";
         contentDiv.textContent = "Announcement in progress...";
 
         // Countdown
@@ -266,7 +208,7 @@
                 notesTextarea.value = "";
                 contentDiv.innerHTML =
                     "Your goal is to spend an enjoyable vacation.<br>" +
-                    "<br>" + 
+                    "<br>" +
                     "What would be the best outcome for you? <br>" +
                     "<br>" +
                     "Think about it and write down a short note <b><u>individually</u></b>.";
@@ -274,8 +216,10 @@
 
             if (remainingTime === 450) {
                 notesTextarea.disabled = true;
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
+                videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
-
             }
 
             if (remainingTime === 438) {
@@ -288,6 +232,8 @@
 
             if (remainingTime === 419) {
                 notesTextarea.disabled = true;
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
             }
@@ -295,9 +241,9 @@
             if (remainingTime === 410) {
                 notesTextarea.disabled = true;
                 notesData = notesTextarea.value;
-                api.executeCommand('toggleAudio');
-                api.executeCommand('toggleVideo');
-
+                jitsiFrame.src = "https://meet.jit.si/example";
+                jitsiFrame.style.display = "block";
+                videoPlaceholder.style.display = "none";
                 contentDiv.innerHTML =
                     "Please share your thoughts about the outcome with <b><u>your team</u></b>.";
             }
@@ -305,8 +251,8 @@
             if (remainingTime === 323) {
                 notesTextarea.disabled = true;
                 notesTextarea.value = "";
-                api.executeCommand('toggleAudio');
-                api.executeCommand('toggleVideo');
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
             }
@@ -315,13 +261,14 @@
                 notesTextarea.disabled = false;
                 contentDiv.innerHTML =
                     "What obstacles might the team face?<br>" +
-                    "<br>" + 
+                    "<br>" +
                     "Think about it and write down a short note <b><u>individually</u></b>.";
             }
 
             if (remainingTime === 296) {
                 notesTextarea.disabled = true;
-
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
             }
@@ -330,13 +277,14 @@
                 notesTextarea.disabled = true;
                 contentDiv.innerHTML =
                     "Imagine the obstacle you find hardest to overcome.<br>" +
-                    "<br>" + 
+                    "<br>" +
                     "Feel free to close your eyes.";
             }
 
             if (remainingTime === 250) {
                 notesTextarea.disabled = true;
-
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
             }
@@ -344,9 +292,9 @@
             if (remainingTime === 238) {
                 notesTextarea.disabled = true;
                 notesData = notesTextarea.value;
-                api.executeCommand('toggleAudio');
-                api.executeCommand('toggleVideo');
-
+                jitsiFrame.src = "https://meet.jit.si/example";
+                jitsiFrame.style.display = "block";
+                videoPlaceholder.style.display = "none";
                 contentDiv.innerHTML =
                     "Please share your thoughts about the most challenging obstacles with <b><u>your team</u></b>.";
             }
@@ -354,9 +302,9 @@
             if (remainingTime === 163) {
                 notesTextarea.disabled = true;
                 notesTextarea.value = "";
-                api.executeCommand('toggleAudio');
-                api.executeCommand('toggleVideo');
-
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
+                videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
             }
 
@@ -364,13 +312,14 @@
                 notesTextarea.disabled = false;
                 contentDiv.innerHTML =
                     "What collaboration rules could help your team overcome obstacles?<br>" +
-                    "<br>" + 
+                    "<br>" +
                     "Think about it and write down a short note <b><u>individually</u></b>.";
             }
 
             if (remainingTime === 126) {
                 notesTextarea.disabled = true;
-
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
             }
@@ -379,13 +328,14 @@
                 notesTextarea.disabled = true;
                 contentDiv.innerHTML =
                     "Imagine how the holiday would be with this rules.<br>" +
-                    "<br>" + 
+                    "<br>" +
                     "Feel free to close your eyes.";
             }
 
             if (remainingTime === 95) {
                 notesTextarea.disabled = true;
-
+                jitsiFrame.src = "";
+                jitsiFrame.style.display = "none";
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "Announcement in progress...";
             }
@@ -393,9 +343,9 @@
             if (remainingTime === 88) {
                 notesTextarea.disabled = true;
                 notesData = notesTextarea.value;
-                api.executeCommand('toggleAudio');
-                api.executeCommand('toggleVideo');
-
+                jitsiFrame.src = "https://meet.jit.si/example";
+                jitsiFrame.style.display = "block";
+                videoPlaceholder.style.display = "none";
                 contentDiv.innerHTML =
                     "Please share and discuss your collaboration rules with <b><u>your team</u></b>.";
             }
@@ -408,9 +358,6 @@
         // Start progress bar
         requestAnimationFrame(updateProgress);
     });
-
-
-
 </script>
 
 {{ endblock }}
