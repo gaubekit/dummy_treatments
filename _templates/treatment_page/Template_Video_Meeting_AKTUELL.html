@@ -277,32 +277,27 @@
             if (remainingTime === 468) {
                 notesTextarea.disabled = false;
                 notesTextarea.value = "";
-                contentDiv.innerHTML =
-                    "Your goal is to spend an enjoyable vacation.<br>" +
-                    "<br>" + 
-                    "What would be the best outcome for you? <br>" +
-                    "<br>" +
-                    "Think about it and write down a short note <b><u>individually</u></b>.";
+                contentDiv.innerHTML = "{{ texts.outcome_notes|safe}}"
+
+
             }
 
             if (remainingTime === 450) {
                 notesTextarea.disabled = true;
-                contentDiv.textContent = "Announcement in progress...";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
 
             }
 
             if (remainingTime === 438) {
                 notesTextarea.disabled = true;
-                contentDiv.innerHTML =
-                    "Imagine the outcome as vividly and clearly as possible.<br>" +
-                    "<br>" +
-                    "Feel free to close your eyes.";
+                contentDiv.innerHTML = "{{texts.outcome_imagination|safe}}";
+                    ;
             }
 
             if (remainingTime === 419) {
                 notesTextarea.disabled = true;
                 videoPlaceholder.style.display = "flex";
-                contentDiv.textContent = "Announcement in progress...";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
             }
 
             if (remainingTime === 410) {
@@ -311,8 +306,7 @@
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
 
-                contentDiv.innerHTML =
-                    "Please share your thoughts about the outcome with <b><u>your team</u></b>.";
+                contentDiv.innerHTML = "{{texts.outcome_meeting|safe}}";
             }
 
             if (remainingTime === 323) {
@@ -321,37 +315,31 @@
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
                 videoPlaceholder.style.display = "flex";
-                contentDiv.textContent = "Announcement in progress...";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
             }
 
             if (remainingTime === 316) {
                 notesTextarea.disabled = false;
-                contentDiv.innerHTML =
-                    "What obstacles might the team face?<br>" +
-                    "<br>" + 
-                    "Think about it and write down a short note <b><u>individually</u></b>.";
+                contentDiv.innerHTML = "{{texts.obstacle_notes|safe}}";
             }
 
             if (remainingTime === 296) {
                 notesTextarea.disabled = true;
 
                 videoPlaceholder.style.display = "flex";
-                contentDiv.textContent = "Announcement in progress...";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
             }
 
             if (remainingTime === 283) {
                 notesTextarea.disabled = true;
-                contentDiv.innerHTML =
-                    "Imagine the obstacle you find hardest to overcome.<br>" +
-                    "<br>" + 
-                    "Feel free to close your eyes.";
+                contentDiv.innerHTML = "{{texts.obstacle_imagination|safe}}";
             }
 
             if (remainingTime === 250) {
                 notesTextarea.disabled = true;
 
                 videoPlaceholder.style.display = "flex";
-                contentDiv.textContent = "Announcement in progress...";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
             }
 
             if (remainingTime === 238) {
@@ -360,8 +348,7 @@
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
 
-                contentDiv.innerHTML =
-                    "Please share your thoughts about the most challenging obstacles with <b><u>your team</u></b>.";
+                contentDiv.innerHTML = "{{texts.obstacle_meeting|safe}}";
             }
 
             if (remainingTime === 163) {
@@ -375,32 +362,26 @@
 
             if (remainingTime === 146) {
                 notesTextarea.disabled = false;
-                contentDiv.innerHTML =
-                    "What collaboration rules could help your team overcome obstacles?<br>" +
-                    "<br>" + 
-                    "Think about it and write down a short note <b><u>individually</u></b>.";
+                contentDiv.innerHTML = "{{texts.rules_notes|safe}}";
             }
 
             if (remainingTime === 126) {
                 notesTextarea.disabled = true;
 
                 videoPlaceholder.style.display = "flex";
-                contentDiv.textContent = "Announcement in progress...";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
             }
 
             if (remainingTime === 115) {
                 notesTextarea.disabled = true;
-                contentDiv.innerHTML =
-                    "Imagine how the holiday would be with this rules.<br>" +
-                    "<br>" + 
-                    "Feel free to close your eyes.";
+                contentDiv.innerHTML = "{{texts.rules_imagination|safe}}";
             }
 
             if (remainingTime === 95) {
                 notesTextarea.disabled = true;
 
                 videoPlaceholder.style.display = "flex";
-                contentDiv.textContent = "Announcement in progress...";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
             }
 
             if (remainingTime === 88) {
@@ -409,8 +390,7 @@
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
 
-                contentDiv.innerHTML =
-                    "Please share and discuss your collaboration rules with <b><u>your team</u></b>.";
+                contentDiv.innerHTML = "{{texts.rules_meeting|safe}}";
             }
 
             if (remainingTime <= 0) {
