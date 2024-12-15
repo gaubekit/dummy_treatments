@@ -1,0 +1,399 @@
+{% extends "global/Page.html" %}
+{% block content %}
+{% load static %}
+<style>
+
+/* Timer ausblenden */
+.otree-timer {
+    display: none;
+}
+
+/* General container styling */
+.container-fluid {
+    height: 90vh; /* Full height reduced by 10% */
+    width: 180%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background-color: #ffffff;
+    margin-left: -40%;
+}
+
+/* Styling for the video container to match right-side height */
+.video-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%; /* Increased width by 20% */
+    height: 100%; /* Exact height match with right side */
+    background-color: #ffffff; 
+    border: 1px solid #d1d1d6;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.placeholder-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1d1d1f;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 20px;
+}
+
+/* Styling for the right-side content (instructions, notes, etc.) */
+.right-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 40%; /* Increased width by 20% */
+    height: 100%; /* Exact height match with the video container */
+    padding: 0px; /* Inner spacing */
+    background: none; /* Removed background color */
+    box-shadow: none; /* Removed shadow */
+}
+
+/* Content container for dynamic elements */
+.content-container {
+    border: 1px solid #d1d1d6;
+    border-radius: 10px;
+    flex: 1;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    text-align: center;
+    background-color: #ffffff; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Notes container styling */
+.notes-container {
+    border: 1px solid #d1d1d6; /* Subtle gray border */
+    border-radius: 10px; /* Rounded corners */
+    flex: 1; /* Take up the remaining space in the right container */
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtiler Schatten */
+    padding: 20px; /* Innenabstand für Lesbarkeit */
+}
+
+/* Prevent users from resizing the textarea */
+textarea {
+    resize: none;
+    width: 100%; /* Make textarea full width */
+    height: 100%; /* Make textarea fill the notes container */
+    border: 1px solid #d1d1d6; /* Subtle gray border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 20px; /* Inner spacing */
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1rem;
+    background-color: #ffffff; /* Weißer Hintergrund */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Innerer Schatten für Tiefe */
+}
+
+/* Ensure the iframe (Jitsi meeting) fills its container */
+iframe {
+    width: 100%; /* Make the iframe stretch horizontally */
+    height: 100%; /* Make the iframe stretch vertically */
+    border: none; /* Remove the default border of the iframe */
+    border-radius: 10px; /* Runde Ecken */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtiler Schatten */
+}
+
+
+</style>
+
+<div class="container-fluid">
+
+    <!--Video meeting (left side, matches height of right side) -->
+    <div class="video-container">
+        <div id="video-placeholder" class="placeholder-text">
+            <h2>The meeting is currently disabled.</h2>
+            <p>Please wait until the meeting is enabled.</p>
+        </div>
+        <iframe id="jitsi-frame" src="https://meet.jit.si/example" allow="camera; microphone"></iframe>
+    </div>
+
+
+    <!-- Right side: dynamic content and notes (stacked) -->
+    <div class="right-container">
+
+        <!-- Dynamic content container -->
+        <div class="content-container">
+            <div id="content">
+                <h4>Dynamic content</h4> <!-- Placeholder heading -->
+            </div>
+        </div>
+
+        <!-- Notes container -->
+        <div class="notes-container">
+            <textarea
+                id="notes"
+                class="form-control"
+                placeholder="Enter your notes here..."
+            ></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- Progressbar-Container -->
+<div style="width: 100%; background-color: #f3f3f3; border: 1px solid #ccc; border-radius: 5px; margin: 20px 0;">
+    <!-- Progressbar -->
+    <div id="progress-bar" style="width: 0%; background-color: #4caf50; height: 25px; text-align: center; color: white; line-height: 25px; border-radius: 5px;">
+        0%
+    </div>
+</div>
+
+
+<audio id = "Audio">
+  <source src="{{ static 'MCCR.mp3' }}" type="audio/mpeg">
+</audio>
+
+
+
+<div id="timeout" data-remaining="{{ timeout_seconds }}"></div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+   // Duration in milliseconds
+    const duration = 480000; // 8 minutes
+    const progressBar = document.getElementById("progress-bar");
+
+    let startTime = null;
+
+    function updateProgress(timestamp) {
+        if (!startTime) startTime = timestamp;
+
+        // Calculate elapsed time
+        const elapsed = timestamp - startTime;
+
+        // Calculate progress in percent
+        const progress = Math.min((elapsed / duration) * 100, 100);
+
+        // Set the width of the progressbar and the text
+        progressBar.style.width = progress + "%";
+        progressBar.innerHTML = Math.round(progress) + "%";
+
+        // If the time has not yet elapsed, execute the function again
+        if (elapsed < duration) {
+            requestAnimationFrame(updateProgress);
+        } else {
+            // Optional: Action when the progressbar is finished
+            progressBar.innerHTML = "Finished!";
+        }
+    }
+
+    // Start the progressbar
+    requestAnimationFrame(updateProgress);
+
+    // References to important elements
+    const contentDiv = document.getElementById("content"); // Div that displays dynamic content
+    const notesTextarea = document.getElementById("notes"); // Textarea for user notes
+    const jitsiFrame = document.getElementById("jitsi-frame"); // Jitsi meeting iframe
+    const videoPlaceholder = document.getElementById("video-placeholder"); // Placeholder text
+
+ var audio = document.getElementById('Audio');
+    audio.play();
+
+    // setup at beginning
+    notesTextarea.disabled = true;
+    jitsiFrame.style.display = "none"; // Hide Jitsi iframe initially
+    videoPlaceholder.style.display = "flex"; // Show placeholder text
+    jitsiFrame.src = ''; // Disable the Jitsi meeting by clearing the iframe source
+    contentDiv.textContent = "Announcement in progress";
+
+
+
+   let timeout = parseInt(document.getElementById("timeout").getAttribute('data-remaining'));
+
+    let remainingTime = timeout;
+
+    console.log("test");
+
+
+    let notesData = ''; // Variable to store the notes entered by the user
+
+  // Countdown
+    const interval = setInterval(() => {
+        remainingTime--;
+       // contentDiv.textContent = remainingTime;
+
+         // Notes
+        if (remainingTime === 468) {
+            notesTextarea.disabled = false; // Enable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            contentDiv.textContent = "You are going to holiday with your team. When the team works well together this leads to an enjoyable experience for everyone.\n"+
+                "What would be the best outcome for you personally? Please think about it individually and write a short note. Therefore the video meeting is not available.";
+
+        }
+
+       // Announcement
+        if (remainingTime === 450) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+
+        }
+
+         // Rest phase
+        if (remainingTime === 438) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+             contentDiv.textContent = "Please take a moment to imagine this output as clearly and vividly as possible in your mind.\n"+
+            " Feel free to close your eyes and we will tell you when it is time to continue with the next step.";
+
+        }
+
+         // Announcement
+        if (remainingTime === 419) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+         // Video Meeting
+        if (remainingTime === 410) {
+            notesTextarea.disabled = true;
+            notesData = notesTextarea.value;
+            jitsiFrame.src = "https://meet.jit.si/example";
+             jitsiFrame.style.display = "block"; // Show Jitsi iframe
+            videoPlaceholder.style.display = "none"; // Hide placeholder text
+            contentDiv.textContent = "Now that you have a clear understanding of your own needs, it is time to learn about your team.\n"+
+                "Take your time to share what you imagined.";
+
+        }
+
+        // Announcement
+        if (remainingTime === 323) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+              // Notes Obstacle
+        if (remainingTime === 316) {
+            notesTextarea.disabled = false; // Enable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            contentDiv.textContent = "What obstacles might the team face based on what you've learned about your member's needs?\n"+
+                " Think about it individually and write down a short note.";
+
+        }
+
+        // Announcement
+        if (remainingTime === 296) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+        // Imagine Obstacle
+        if (remainingTime === 283) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+             contentDiv.textContent = "Based on the obstacles you identified, choose the one that you find the most difficult to overcome and imagine as vividly as possible.\n"+
+                 "Feel free to close your eyes - we will tell you when it's time to continue with the next step.";
+
+        }
+
+         // Announcement
+        if (remainingTime === 250) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+
+            // Video Meeting Obstacle
+        if (remainingTime === 238) {
+            notesTextarea.disabled = true;
+            notesData = notesTextarea.value;
+            jitsiFrame.src = "https://meet.jit.si/example";
+             jitsiFrame.style.display = "block"; // Show Jitsi iframe
+            videoPlaceholder.style.display = "none"; // Hide placeholder text
+            contentDiv.textContent ="Now that you have a better understanding of the obstacles that may be challenging\n" +
+                " for you, it's time to explore the obstacles other team members may face. Take some\n" +
+                " time to share what you imagined with your team." ;
+
+        }
+
+         // Announcement
+        if (remainingTime === 165) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+
+              // Notes Rules
+        if (remainingTime === 150) {
+            notesTextarea.disabled = false; // Enable the textarea for input
+            notesTextarea.value = ''; // Clear any previous text
+            contentDiv.textContent = "In the first phase, you identified the team's needs. Next, you examined the obstacles\n" +
+                " that could prevent those needs from being met. Now, it's time to focus on collaboration."+
+                "Take some time to reflect individually and consider collaboration rules that could help\n" +
+                " your team overcome these challenges.";
+
+        }
+  // Announcement
+        if (remainingTime === 126) {
+           notesTextarea.disabled = true; // Disable the textarea for input
+            jitsiFrame.src = '';
+             jitsiFrame.style.display = "none"; // Hide Jitsi iframe
+            videoPlaceholder.style.display = "flex"; // Show placeholder text
+             contentDiv.textContent = "Announcement in progress";
+             }
+
+         // Video Meeting Rules
+        if (remainingTime === 116) {
+            notesTextarea.disabled = true;
+            notesData = notesTextarea.value;
+            jitsiFrame.src = "https://meet.jit.si/example";
+             jitsiFrame.style.display = "block"; // Show Jitsi iframe
+            videoPlaceholder.style.display = "none"; // Hide placeholder text
+            contentDiv.textContent = "Nowthatyou've identified some rules, share and discuss them with your team, and\n" +
+                " agree on which ones you'd like to follow together.";
+
+        }
+
+
+        // stops Countdown when time is up
+        if (remainingTime <= 0) {
+            clearInterval(interval);
+
+
+        }
+    }, 1000); // reduces time every second
+
+
+});
+
+
+</script>
+
+
+{{ endblock }}
