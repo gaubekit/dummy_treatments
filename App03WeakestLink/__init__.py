@@ -9,7 +9,7 @@ doc = ''
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'XXTestnameXX' # Platzhalter
+    NAME_IN_URL = 'XXTestnameXX' # placeholder
     PLAYERS_PER_GROUP = 4
     NUM_ROUNDS = 1
     ENDOWMENT = 200
@@ -36,8 +36,8 @@ class Player(BasePlayer):
 
 class MentalContrasting(Page):
     template_name = 'treatment_page/Template_Video_Meeting_AKTUELL.html'
-    timeout_seconds = 480  # Gesamtzeit: 8:00 Minuten
-    group_by_arrival_time = True  # Spieler in Gruppen von 4
+    timeout_seconds = 480  # total time 8 minutes
+    group_by_arrival_time = True  # players in groups of 4
 
     def vars_for_template(self):
             return {
