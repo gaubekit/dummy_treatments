@@ -108,6 +108,29 @@
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
+    /* Styling for the small window */
+    .small-window {
+        display: flex;          
+        justify-content: center; 
+        align-items: center;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 140px;
+        height: 140px;
+        background-color: #ffffff;
+        text-align: center;
+        z-index: 10; 
+    }
+
+    .small-window-img {
+        width: 100%; 
+        height: auto; 
+        border-radius: 5px; 
+        object-fit: cover;
+    }
+
 </style>
 
 <!-- Main content layout: includes video meeting with placeholder text and jitsi iFrame and right-side container --> 
@@ -125,9 +148,15 @@
 
     <!-- Right-side Content -->
     <div class="right-container">
-        <div class="content-container">
+        <div class="content-container" style="position: relative;">
             <div id="content" style="font-size: 24px;">
                 <h4>Wechselnde Inhalte</h4>
+            </div>
+            <!-- Small Window for Logo -->
+            <div class="small-window">
+                <div id="image">
+                    <h4> </h4>
+                </div>
             </div>
         </div>
         <div class="notes-container">
@@ -184,6 +213,10 @@
         const videoPlaceholder = document.getElementById("video-placeholder");
         const timeoutElement = document.getElementById("timeout");
         const audio = document.getElementById("Audio");
+
+        const logo = document.getElementById("image");
+        const imageTeam = '<img src="{% static "images/team.png" %}" style="width: 90px; height: auto;">';
+        const imageIndividual = '<img src="{% static "images/individual.png" %}" style="width: 90px; height: auto;">';
 
         // Initial variables
         let startTime = null;
@@ -265,10 +298,9 @@
 
         // Initial setup
         notesTextarea.disabled = true;
-
         videoPlaceholder.style.display = "flex";
-
         contentDiv.textContent = "Announcement in progress...";
+        logo.innerHTML = imageIndividual;
 
         // Countdown
         const interval = setInterval(() => {
@@ -277,27 +309,27 @@
             if (remainingTime === 468) {
                 notesTextarea.disabled = false;
                 notesTextarea.value = "";
-                contentDiv.innerHTML = "{{ texts.outcome_notes|safe}}"
-
-
+                contentDiv.innerHTML = "{{ texts.outcome_notes|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 450) {
                 notesTextarea.disabled = true;
                 contentDiv.textContent = "{{texts.announcement|safe}}";
-
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 438) {
                 notesTextarea.disabled = true;
                 contentDiv.innerHTML = "{{texts.outcome_imagination|safe}}";
-                    ;
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 419) {
                 notesTextarea.disabled = true;
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageTeam;
             }
 
             if (remainingTime === 410) {
@@ -305,8 +337,8 @@
                 notesData = notesTextarea.value;
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
-
                 contentDiv.innerHTML = "{{texts.outcome_meeting|safe}}";
+                logo.innerHTML = imageTeam;
             }
 
             if (remainingTime === 323) {
@@ -316,30 +348,33 @@
                 api.executeCommand('toggleVideo');
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 316) {
                 notesTextarea.disabled = false;
                 contentDiv.innerHTML = "{{texts.obstacle_notes|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 296) {
                 notesTextarea.disabled = true;
-
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 283) {
                 notesTextarea.disabled = true;
                 contentDiv.innerHTML = "{{texts.obstacle_imagination|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 250) {
                 notesTextarea.disabled = true;
-
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageTeam;
             }
 
             if (remainingTime === 238) {
@@ -347,8 +382,8 @@
                 notesData = notesTextarea.value;
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
-
                 contentDiv.innerHTML = "{{texts.obstacle_meeting|safe}}";
+                logo.innerHTML = imageTeam;
             }
 
             if (remainingTime === 163) {
@@ -356,32 +391,34 @@
                 notesTextarea.value = "";
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
-
                 contentDiv.textContent = "Announcement in progress...";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 146) {
                 notesTextarea.disabled = false;
                 contentDiv.innerHTML = "{{texts.rules_notes|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 126) {
                 notesTextarea.disabled = true;
-
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 115) {
                 notesTextarea.disabled = true;
                 contentDiv.innerHTML = "{{texts.rules_imagination|safe}}";
+                logo.innerHTML = imageIndividual;
             }
 
             if (remainingTime === 95) {
                 notesTextarea.disabled = true;
-
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageTeam;
             }
 
             if (remainingTime === 88) {
@@ -389,8 +426,8 @@
                 notesData = notesTextarea.value;
                 api.executeCommand('toggleAudio');
                 api.executeCommand('toggleVideo');
-
                 contentDiv.innerHTML = "{{texts.rules_meeting|safe}}";
+                logo.innerHTML = imageTeam;
             }
 
             if (remainingTime <= 0) {
@@ -401,7 +438,6 @@
         // Start progress bar
         requestAnimationFrame(updateProgress);
     });
-
 
 
 </script>
