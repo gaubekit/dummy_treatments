@@ -55,9 +55,9 @@
     justify-content: space-between;
     width: 40%; /* Increased width by 20% */
     height: 100%; /* Exact height match with the video container */
-    padding: 0px; /* Abstand für Innenraum */
-    background: none; /* Entfernt Hintergrundfarbe */
-    box-shadow: none; /* Entfernt Schatten */
+    padding: 0px; /* Inner spacing */
+    background: none; /* Removed background color */
+    box-shadow: none; /* Removed shadow */
 }
 
 /* Content container for dynamic elements */
@@ -77,10 +77,10 @@
 
 /* Notes container styling */
 .notes-container {
-    border: 1px solid #d1d1d6; /* Dezente graue Umrandung */
-    border-radius: 10px; /* Runde Ecken */
+    border: 1px solid #d1d1d6; /* Subtle gray border */
+    border-radius: 10px; /* Rounded corners */
     flex: 1; /* Take up the remaining space in the right container */
-    background-color: #ffffff; /* Weißer Hintergrund */
+    background-color: #ffffff; /* White background */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtiler Schatten */
     padding: 20px; /* Innenabstand für Lesbarkeit */
 }
@@ -90,9 +90,9 @@ textarea {
     resize: none;
     width: 100%; /* Make textarea full width */
     height: 100%; /* Make textarea fill the notes container */
-    border: 1px solid #d1d1d6; /* Dezente graue Umrandung */
-    border-radius: 5px; /* Runde Ecken */
-    padding: 20px; /* Innenabstand */
+    border: 1px solid #d1d1d6; /* Subtle gray border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 20px; /* Inner spacing */
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-size: 1rem;
     background-color: #ffffff; /* Weißer Hintergrund */
@@ -116,8 +116,8 @@ iframe {
     <!--Video meeting (left side, matches height of right side) -->
     <div class="video-container">
         <div id="video-placeholder" class="placeholder-text">
-            <h2>Das Meeting ist derzeit deaktiviert.</h2>
-            <p>Bitte warten Sie, bis das Meeting aktiviert wird.</p>
+            <h2>The meeting is currently disabled.</h2>
+            <p>Please wait until the meeting is enabled.</p>
         </div>
         <iframe id="jitsi-frame" src="https://meet.jit.si/example" allow="camera; microphone"></iframe>
     </div>
@@ -129,7 +129,7 @@ iframe {
         <!-- Dynamic content container -->
         <div class="content-container">
             <div id="content">
-                <h4>Wechselnde Inhalte</h4> <!-- Placeholder heading -->
+                <h4>Dynamic content</h4> <!-- Placeholder heading -->
             </div>
         </div>
 
@@ -138,7 +138,7 @@ iframe {
             <textarea
                 id="notes"
                 class="form-control"
-                placeholder="Hier Notizen eingeben..."
+                placeholder="Enter your notes here..."
             ></textarea>
         </div>
     </div>
@@ -146,7 +146,7 @@ iframe {
 
 <!-- Progressbar-Container -->
 <div style="width: 100%; background-color: #f3f3f3; border: 1px solid #ccc; border-radius: 5px; margin: 20px 0;">
-    <!-- Fortschrittsbalken -->
+    <!-- Progressbar -->
     <div id="progress-bar" style="width: 0%; background-color: #4caf50; height: 25px; text-align: center; color: white; line-height: 25px; border-radius: 5px;">
         0%
     </div>
@@ -167,8 +167,8 @@ iframe {
 document.addEventListener("DOMContentLoaded", function () {
 
 
-   // Dauer in Millisekunden
-    const duration = 480000; // 8 Minuten
+   // Duration in milliseconds
+    const duration = 480000; // 8 minutes
     const progressBar = document.getElementById("progress-bar");
 
     let startTime = null;
@@ -176,26 +176,26 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateProgress(timestamp) {
         if (!startTime) startTime = timestamp;
 
-        // Berechne verstrichene Zeit
+        // Calculate elapsed time
         const elapsed = timestamp - startTime;
 
-        // Berechne den Fortschritt in Prozent
+        // Calculate progress in percent
         const progress = Math.min((elapsed / duration) * 100, 100);
 
-        // Setze die Breite der Progressbar und den Text
+        // Set the width of the progressbar and the text
         progressBar.style.width = progress + "%";
         progressBar.innerHTML = Math.round(progress) + "%";
 
-        // Wenn die Zeit noch nicht abgelaufen ist, führe die Funktion erneut aus
+        // If the time has not yet elapsed, execute the function again
         if (elapsed < duration) {
             requestAnimationFrame(updateProgress);
         } else {
-            // Optional: Aktion, wenn die Progressbar fertig ist
-            progressBar.innerHTML = "Fertig!";
+            // Optional: Action when the progressbar is finished
+            progressBar.innerHTML = "Finished!";
         }
     }
 
-    // Starte die Progressbar
+    // Start the progressbar
     requestAnimationFrame(updateProgress);
 
     // References to important elements
@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-         // Ruhephase
+         // Rest phase
         if (remainingTime === 438) {
            notesTextarea.disabled = true; // Disable the textarea for input
              contentDiv.textContent = "Please take a moment to imagine this output as clearly and vividly as possible in your mind.\n"+
