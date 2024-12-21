@@ -190,14 +190,13 @@
         e.returnValue = ""; // Standard behavior blocked
     });
 
-    // prohibits Backspace-Key
     document.addEventListener("keydown", function (e) {
-        if ((e.key === "F5") ||
-            (e.ctrlKey && e.key === "r") ||
-            (e.key === "Backspace")) {
-            e.preventDefault();
-        }
-    });
+    // prohibits F5 or ctr + R
+    if (e.key === "F5" || (e.ctrlKey && e.key === "r")) {
+        e.preventDefault();
+
+    }
+});
 
     document.addEventListener("DOMContentLoaded", () => {
 
