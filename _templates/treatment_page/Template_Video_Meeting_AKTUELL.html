@@ -1,0 +1,444 @@
+{% extends "global/Page.html" %}
+{% block content %}
+{% load static %}
+
+<style>
+    /* Hide timer */
+    .otree-timer {
+        display: none;
+    }
+
+    /* General container styling */
+    .container-fluid {
+        height: 90vh;
+        width: 180%;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        background-color: #ffffff;
+        margin-left: -40%;
+    }
+
+    /* Styling of video container */
+    .video-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60%;
+        height: 100%;
+        background-color: #ffffff;
+        border: 1px solid #d1d1d6;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Styling of placeholder text for jitsi video meeting */
+    .placeholder-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.05);
+        color: #1d1d1f;
+        font-size: 1.5rem;
+        font-weight: bold;
+        padding: 20px;
+    }
+
+    /* Styling for the right-side content (instructions, notes, etc.) */
+    .right-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 40%;
+        height: 100%;
+        padding: 0px;
+        background: none;
+        box-shadow: none;
+    }
+
+    /* Styling of content container for dynamic elements */
+    .content-container {
+        border: 1px solid #d1d1d6;
+        border-radius: 10px;
+        flex: 1;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    /* Styling of notes container */
+    .notes-container {
+        border: 1px solid #d1d1d6;
+        border-radius: 10px;
+        flex: 1;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    /* Styling of textarea */
+    textarea {
+        resize: none;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #d1d1d6;
+        border-radius: 5px;
+        padding: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        font-size: 1rem;
+        background-color: #ffffff;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Styling of jitsi video meeting container */
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Styling for the small window */
+    .small-window {
+        display: flex;          
+        justify-content: center; 
+        align-items: center;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 140px;
+        height: 140px;
+        background-color: #ffffff;
+        text-align: center;
+        z-index: 10; 
+    }
+
+    .small-window-img {
+        width: 100%; 
+        height: auto; 
+        border-radius: 5px; 
+        object-fit: cover;
+    }
+
+</style>
+
+<!-- Main content layout: includes video meeting with placeholder text and jitsi iFrame and right-side container --> 
+<div class="container-fluid">
+    <!-- Video Meeting Section -->
+    <div class="video-container">
+        <div id="video-placeholder" class="placeholder-text">
+            <h2>Video-Meeting</h2>
+            <p></p>
+        </div>
+                   <script src="https://haps-meeting.k8s.iism.kit.edu/external_api.js"></script>
+    </div>
+
+
+
+    <!-- Right-side Content -->
+    <div class="right-container">
+        <div class="content-container" style="position: relative;">
+            <div id="content" style="font-size: 24px;">
+                <h4>Dynamic content</h4> <!-- Placeholder heading -->
+            </div>
+            <!-- Small Window for Logo -->
+            <div class="small-window">
+                <div id="image">
+                    <h4> </h4>
+                </div>
+            </div>
+        </div>
+        <div class="notes-container">
+            <textarea id="notes" class="form-control" placeholder="Enter your notes here..." style="font-size: 24px;"></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- Layout: progress bar -->
+<div style="width: 100%; background-color: #f3f3f3; border: 1px solid #ccc; border-radius: 5px; margin: 20px 0;">
+    <div id="progress-bar"
+        style="width: 0%; background-color: #4caf50; height: 25px; text-align: center; color: white; line-height: 25px; border-radius: 5px;">
+        0%</div>
+</div>
+
+<!-- Audio player -->
+<audio id="Audio">
+    <source src="{{ static 'MCCR.mp3' }}" type="audio/mpeg">
+</audio>
+
+<!-- Timeout data: stores data of remaining time -->
+<div id="timeout" data-remaining="{{ timeout_seconds }}"></div>
+
+<!-- Script for managing a timed sequence with dynamic content updates, progress bar, audio playback, and interaction via a countdown timer. 
+    It controls the display of announcements, enables/disables user input, and triggers video meetings at specific time intervals. -->
+<script>
+
+   // prohibits (F5 oder Strg + R)
+    window.addEventListener("beforeunload", function (e) {
+        e.preventDefault();
+        e.returnValue = ""; // Standard behavior blocked
+    });
+
+    document.addEventListener("keydown", function (e) {
+    // prohibits F5 or ctr + R
+    if (e.key === "F5" || (e.ctrlKey && e.key === "r")) {
+        e.preventDefault();
+
+    }
+});
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+
+    // Constant variables
+        const DURATION = 480000; // Duration of treatment (8 minutes)
+        const INTERVAL_TIME = 1000; // Countdown interval (1 second)
+
+        // Important DOM-elements
+        const progressBar = document.getElementById("progress-bar");
+        const contentDiv = document.getElementById("content");
+        const notesTextarea = document.getElementById("notes");
+        const videoPlaceholder = document.getElementById("video-placeholder");
+        const timeoutElement = document.getElementById("timeout");
+        const audio = document.getElementById("Audio");
+
+        const logo = document.getElementById("image");
+        const imageTeam = '<img src="{% static "images/team.png" %}" style="width: 90px; height: auto;">';
+        const imageIndividual = '<img src="{% static "images/individual.png" %}" style="width: 90px; height: auto;">';
+
+        // Initial variables
+        let startTime = null;
+        let remainingTime = parseInt(timeoutElement.getAttribute("data-remaining"));
+        let notesData = ""; //
+
+        // Progress bar
+        const updateProgress = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+
+            const elapsed = timestamp - startTime;
+            const progress = Math.min((elapsed / DURATION) * 100, 100);
+
+            progressBar.style.width = progress + "%";
+            progressBar.innerHTML = Math.round(progress) + "%";
+
+            if (elapsed < DURATION) {
+                requestAnimationFrame(updateProgress);
+            } else {
+                progressBar.innerHTML = "Done!";
+            }
+        };
+
+     const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
+      const TN_name = "P1";
+    // adjust information to display
+
+    const options = {
+        roomName: "Video Meeting", //This is the name of the room, with player's group ID
+        parentNode: document.getElementById('video-placeholder'), //Now, you declare here which element should parent your stream.
+        configOverwrite: {
+            prejoinConfig: {
+                enabled: false
+            },
+            disableSelfView: false,
+            startWithAudioMuted: true,
+            startWithVideoMuted: true,
+            filmstrip: {
+                disableResizable: true,
+            },
+            participantsPane: {
+                hideModeratorSettingsTab: true,
+                hideMoreActionsButton: true,
+                hideMuteAllButton: true
+            },
+
+                disableSimulcast: false,
+                enableLayerSuspension: true
+
+        },
+        interfaceConfigOverwrite: {
+            TOOLBAR_BUTTONS: ['fodeviceselection'],
+            SHOW_JITSI_WATERMARK: false,
+            TILE_VIEW_MAX_COLUMNS: 2,
+            TILE_VIEW_ENABLED: true,
+            SHOW_MEETING_TIMER: false,
+            SHOW_MORE_ACTIONS: false,
+            PARTICIPANT_MENU_BUTTONS: []
+        },
+        userInfo: {
+            displayName: TN_name,
+        }
+    };
+
+        const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
+        //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
+        api.addEventListener('videoConferenceJoined', () => {
+            api.executeCommand('setTileView', true);
+            console.log("Meeting joined");
+
+        });
+
+
+
+
+
+        // Play audio
+        audio.play();
+
+        // Initial setup
+        notesTextarea.disabled = true;
+        videoPlaceholder.style.display = "flex";
+        contentDiv.textContent = "Announcement in progress...";
+        logo.innerHTML = imageIndividual;
+
+        // Countdown
+        const interval = setInterval(() => {
+            remainingTime--;
+           
+            if (remainingTime === 468) {
+                notesTextarea.disabled = false;
+                notesTextarea.value = "";
+                contentDiv.innerHTML = "{{ texts.outcome_notes|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 450) {
+                notesTextarea.disabled = true;
+                contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 438) {
+                notesTextarea.disabled = true;
+                contentDiv.innerHTML = "{{texts.outcome_imagination|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 419) {
+                notesTextarea.disabled = true;
+                videoPlaceholder.style.display = "flex";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageTeam;
+            }
+
+            if (remainingTime === 410) {
+                notesTextarea.disabled = true;
+                notesData = notesTextarea.value;
+                api.executeCommand('toggleAudio');
+                api.executeCommand('toggleVideo');
+                contentDiv.innerHTML = "{{texts.outcome_meeting|safe}}";
+                logo.innerHTML = imageTeam;
+            }
+
+            if (remainingTime === 323) {
+                notesTextarea.disabled = true;
+                notesTextarea.value = "";
+                api.executeCommand('toggleAudio');
+                api.executeCommand('toggleVideo');
+                videoPlaceholder.style.display = "flex";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 316) {
+                notesTextarea.disabled = false;
+                contentDiv.innerHTML = "{{texts.obstacle_notes|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 296) {
+                notesTextarea.disabled = true;
+                videoPlaceholder.style.display = "flex";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 283) {
+                notesTextarea.disabled = true;
+                contentDiv.innerHTML = "{{texts.obstacle_imagination|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 250) {
+                notesTextarea.disabled = true;
+                videoPlaceholder.style.display = "flex";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageTeam;
+            }
+
+            if (remainingTime === 238) {
+                notesTextarea.disabled = true;
+                notesData = notesTextarea.value;
+                api.executeCommand('toggleAudio');
+                api.executeCommand('toggleVideo');
+                contentDiv.innerHTML = "{{texts.obstacle_meeting|safe}}";
+                logo.innerHTML = imageTeam;
+            }
+
+            if (remainingTime === 163) {
+                notesTextarea.disabled = true;
+                notesTextarea.value = "";
+                api.executeCommand('toggleAudio');
+                api.executeCommand('toggleVideo');
+                contentDiv.textContent = "Announcement in progress...";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 146) {
+                notesTextarea.disabled = false;
+                contentDiv.innerHTML = "{{texts.rules_notes|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 126) {
+                notesTextarea.disabled = true;
+                videoPlaceholder.style.display = "flex";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 115) {
+                notesTextarea.disabled = true;
+                contentDiv.innerHTML = "{{texts.rules_imagination|safe}}";
+                logo.innerHTML = imageIndividual;
+            }
+
+            if (remainingTime === 95) {
+                notesTextarea.disabled = true;
+                videoPlaceholder.style.display = "flex";
+                contentDiv.textContent = "{{texts.announcement|safe}}";
+                logo.innerHTML = imageTeam;
+            }
+
+            if (remainingTime === 88) {
+                notesTextarea.disabled = true;
+                notesData = notesTextarea.value;
+                api.executeCommand('toggleAudio');
+                api.executeCommand('toggleVideo');
+                contentDiv.innerHTML = "{{texts.rules_meeting|safe}}";
+                logo.innerHTML = imageTeam;
+            }
+
+            if (remainingTime <= 0) {
+                clearInterval(interval);
+            }
+        }, INTERVAL_TIME);
+
+        // Start progress bar
+        requestAnimationFrame(updateProgress);
+    });
+
+
+</script>
+
+{{ endblock }}
