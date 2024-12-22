@@ -10,7 +10,7 @@
 
     /* General container styling */
     .container-fluid {
-        height: 90vh;
+        height: 85vh;
         width: 180%;
         display: flex;
         flex-direction: row;
@@ -109,6 +109,11 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    /* Hide jitsi frame */
+    .jitsi-hidden iframe {
+    display: none;
+    }
+
     /* Styling for the small window */
     .small-window {
         display: flex;          
@@ -124,6 +129,7 @@
         z-index: 10; 
     }
 
+    /* Styling small window for logo */
     .small-window-img {
         width: 100%; 
         height: auto; 
@@ -143,7 +149,6 @@
         </div>
                    <script src="https://haps-meeting.k8s.iism.kit.edu/external_api.js"></script>
     </div>
-
 
 
     <!-- Right-side Content -->
@@ -288,9 +293,8 @@
 
         });
 
-
-
-
+        // Video-Container-Element
+        const videoContainer = document.querySelector('.video-container');
 
         // Play audio
         audio.play();
@@ -300,6 +304,7 @@
         videoPlaceholder.style.display = "flex";
         contentDiv.textContent = "Announcement in progress...";
         logo.innerHTML = imageIndividual;
+        videoContainer.classList.add('jitsi-hidden'); // Jitsi ausblenden
 
         // Countdown
         const interval = setInterval(() => {
@@ -329,6 +334,7 @@
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
                 logo.innerHTML = imageTeam;
+                videoContainer.classList.remove('jitsi-hidden'); // Jitsi einblenden
             }
 
             if (remainingTime === 410) {
@@ -348,6 +354,7 @@
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
                 logo.innerHTML = imageIndividual;
+                videoContainer.classList.add('jitsi-hidden'); // Jitsi ausblenden
             }
 
             if (remainingTime === 316) {
@@ -374,6 +381,7 @@
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
                 logo.innerHTML = imageTeam;
+                videoContainer.classList.remove('jitsi-hidden'); // Jitsi einblenden
             }
 
             if (remainingTime === 238) {
@@ -392,6 +400,7 @@
                 api.executeCommand('toggleVideo');
                 contentDiv.textContent = "Announcement in progress...";
                 logo.innerHTML = imageIndividual;
+                videoContainer.classList.add('jitsi-hidden'); // Jitsi ausblenden
             }
 
             if (remainingTime === 146) {
@@ -418,6 +427,7 @@
                 videoPlaceholder.style.display = "flex";
                 contentDiv.textContent = "{{texts.announcement|safe}}";
                 logo.innerHTML = imageTeam;
+                videoContainer.classList.remove('jitsi-hidden'); // Jitsi einblenden
             }
 
             if (remainingTime === 88) {
